@@ -1,0 +1,31 @@
+{
+  "name": "functional-programming",
+  "version": "1.0.0",
+  "description": "Voor de opdrachtgever van dit project wordt er een digitale visualisatie vanuit de exterene database van het museum. De opdracht gaat over een passende visaulisatie maken die past bij de geschiedenis van het tropenmuseum.",
+  "main": "index.js",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RoyCsuka/functional-programming.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoyCsuka/functional-programming/issues"
+  },
+  "homepage": "https://github.com/RoyCsuka/functional-programming#readme",
+  "devDependencies": {
+    "rollup": "^1.26.3",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.1.2"
+  },
+  "dependencies": {
+    "d3": "^5.12.0"
+  }
+}
