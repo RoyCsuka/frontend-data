@@ -29,7 +29,7 @@ Hierdoor is de data niet 100% compleet maar heb ik wel het functionele gedeelte 
 
 ## Externe database
 Online heb ik gezocht naar een database met historische gebeurtenissen in de wereld met [dit bestand als begin](https://slidex.tips/download/major-events-in-world-history). Uiteindelijk heb ik de data uit dit PDF'je gehaald en in Excel verwerkt. De data heb ik opgeschoond in Excel en heb ik geexpoteerd als CSV en omgezet naar JSON. Hieronder een regel uit de database:
-![Externe database](https://github.com/RoyCsuka/assets/blob/master/externe-database.png)
+![Externe database](https://github.com/RoyCsuka/assets/blob/master/external-database.png)
 
 ## Data transformeren met D3
 Met D3 heb ik de [code van Laurens](https://beta.vizhub.com/Razpudding/2e039bf6e39a421180741285a8f735a3) gepakt en maar twee zinnen van veranderd waardoor de groepering en counting van de arrays anders is gegaan. Met als eindresultaat:
