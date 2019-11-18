@@ -5,9 +5,9 @@ Deze twee weken heb ik mij bezig gehouden met het verder uitwerken van het [conc
 # Concept
 Mijn concept focust zich op het aantal items laten zien op basis van herkomst in combinatie met tijd. Als visuele uitwerking heb ik gekozen voor een map (zie afbeeldingen hieronder).
 
-![Concept uitwerking scherm 1](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_1.jpg)
+![Concept uitwerking scherm 1](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_3.jpg)
 
-![Concept uitwerking scherm 2](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_1.jpg)
+![Concept uitwerking scherm 2](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_4.jpg)
 
 # Data
 - [x] Data opschonen per eeuw
