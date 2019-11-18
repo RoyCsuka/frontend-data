@@ -6,10 +6,8 @@ Deze twee weken heb ik mij bezig gehouden met het verder uitwerken van het [conc
 Mijn concept focust zich op het aantal items laten zien op basis van herkomst in combinatie met tijd. Als visuele uitwerking heb ik gekozen voor een map (zie afbeeldingen hieronder).
 
 ![Concept uitwerking scherm 1](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_1.jpg)
-Het concept laat het aantal items per continent zien op basis van een tijdsperiode.
 
 ![Concept uitwerking scherm 2](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_1.jpg)
-Het concept laat het aantal items per land zien op basis van een tijdsperiode met hierbij een historische gebeurtenis.
 
 # Data
 - [x] Data opschonen per eeuw
@@ -31,7 +29,7 @@ Hierdoor is de data niet 100% compleet maar heb ik wel het functionele gedeelte 
 
 ## Externe database
 Online heb ik gezocht naar een database met historische gebeurtenissen in de wereld met [dit bestand als begin](https://slidex.tips/download/major-events-in-world-history). Uiteindelijk heb ik de data uit dit PDF'je gehaald en in Excel verwerkt. De data heb ik opgeschoond in Excel en heb ik geexpoteerd als CSV en omgezet naar JSON. Hieronder een regel uit de database:
-![Externe database](https://github.com/RoyCsuka/assets/blob/master/externe-database.png) De resultaten van de externe database
+![Externe database](https://github.com/RoyCsuka/assets/blob/master/externe-database.png)
 
 ## Data transformeren met D3
 Met D3 heb ik de [code van Laurens](https://beta.vizhub.com/Razpudding/2e039bf6e39a421180741285a8f735a3) gepakt en maar twee zinnen van veranderd waardoor de groepering en counting van de arrays anders is gegaan. Met als eindresultaat:
