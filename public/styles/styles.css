@@ -4,12 +4,12 @@ body {
 }
 
 .sphere {
-  fill: black;
+  fill: white;
 }
 
 .country {
-  fill: goldenrod;
-  stroke: black;
+  fill: brown;
+  stroke: white;
   stroke-opacity: 0.1;
 }
 
