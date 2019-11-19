@@ -13,7 +13,7 @@ Mijn concept focust zich op het aantal items laten zien op basis van herkomst in
 - [x] Data opschonen per eeuw
 - [x] Externe database vinden van gebeurtenissen per eeuw
 - [ ] Externe database opschonen
-- [ ] Alle landen groeperen als super-continent
+- [ ] Alle landen groeperen als super-continent (Afrika, Amerika, Eurazië en Oceanië)
 - [ ] Alles wat dezelfde locatie en jaartal heeft samenvoegen (het aantal items wel bij elkaar optellen)
 - [ ] Alles per eeuw laten zien
 
