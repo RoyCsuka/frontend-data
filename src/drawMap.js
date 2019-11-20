@@ -4,7 +4,7 @@ import { feature } from 'topojson'
 export function drawMap(container, projection){
     const pathGenerator = geoPath().projection(projection)
     setupMap(container, pathGenerator)
-    drawCountries(container, pathGenerator)
+    drawContinents(container, pathGenerator)
 }
 
 function setupMap(container, pathGenerator){
@@ -14,7 +14,7 @@ function setupMap(container, pathGenerator){
     .attr('d', pathGenerator({ type: 'Sphere' }))
 }
 
-function drawCountries(container, pathGenerator) {
+function drawContinents(container, pathGenerator) {
   d3.json('https://piwodlaiwo.github.io/topojson//world-continents.json').then(data => {
     const countries = feature(data, data.objects.continent);
     container

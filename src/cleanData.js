@@ -16,23 +16,19 @@ export async function cleanedArr(endpoint, query){
 	data = transformData(data)
     console.log("transformedData: ", data)
 
+
+
     let test = numberOfItemsPerCountry(data[0].values)
 
-    // function kaaseten(jaartal, datadieikmeegeef) {
-    //     datadieikmeegeef.values
-    //
-    //     if value.date === jaartal
-    //
-    // }
-
     data = data.map(country => {
+        
         let objectCountTotal = numberOfItemsPerCountry(country.values)
         return {
             countryLat: country.values[0].lat,
             countryLong: country.values[0].long,
-            objectData: country.values[0].date,
+            objectDate: country.values[0].date,
             objectCountTotal: objectCountTotal,
-            countryName: country.key
+            country: country.key
         }
     })
 
@@ -202,7 +198,7 @@ function deleteUnformattedData(array) {
  return finalArray
 }
 
-// Tweede functie van cleanAllData()
+// Tel het aantal items per land bij elkaar op en maak er 1 waarde van.
 function numberOfItemsPerCountry(country) {
     let totalObjectCount = 0;
     country.forEach(el => {

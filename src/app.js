@@ -36,10 +36,9 @@ const endpoint = "https://api.data.netwerkdigitaalerfgoed.nl/datasets/ivo/NMVW/s
 const svg = select('svg')
 
 const mapSettings = {
-    projection: geoNaturalEarth1(),
+    projection: geoNaturalEarth1().rotate([-11,0]),
     circleDelay: 11,
-    circleSize: 6,
-    rotate: [-11,0]
+    circleSize: 6
 }
 
 makeVisualization()
