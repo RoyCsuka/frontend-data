@@ -7,10 +7,36 @@ body {
   fill: white;
 }
 
-.country {
-  fill: brown;
+.asia,
+.north-america,
+.south-america,
+.europe,
+.africa,
+.oceania {
+  /* fill: brown; */
   stroke: white;
   stroke-opacity: 0.1;
+}
+
+.asia {
+    fill: #b4464a;
+}
+
+.north-america,
+.south-america {
+    fill: #3c6046;
+}
+
+.europe {
+    fill: #474fb2;
+}
+
+.africa {
+    fill: #cf9b35;
+}
+
+.oceania {
+    fill: #4f829b;
 }
 
 svg {

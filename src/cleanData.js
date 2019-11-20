@@ -5,16 +5,39 @@ const jsonResults = config.results.bindings
 export async function cleanedArr(endpoint, query){
   //Load the data and return a promise which resolves with said data
 	let data = await loadData(endpoint, query)
-    console.log("raw data: ", data)
+    // console.log("raw data: ", data)
     // Cleaning of year, number of items and continent
     data = cleanAllData()
-    console.log("cleaned data of items: ", data)
+    // console.log("cleaned data of items: ", data)
 
 	data = data.map(cleanData)
     console.log("cleanedData: ", data)
 
 	data = transformData(data)
     console.log("transformedData: ", data)
+
+    let test = numberOfItemsPerCountry(data[0].values)
+
+    // function kaaseten(jaartal, datadieikmeegeef) {
+    //     datadieikmeegeef.values
+    //
+    //     if value.date === jaartal
+    //
+    // }
+
+    data = data.map(country => {
+        let objectCountTotal = numberOfItemsPerCountry(country.values)
+        return {
+            countryLat: country.values[0].lat,
+            countryLong: country.values[0].long,
+            objectData: country.values[0].date,
+            objectCountTotal: objectCountTotal,
+            countryName: country.key
+        }
+    })
+
+    console.log(data)
+
     return data
 }
 
@@ -27,10 +50,7 @@ function loadData(url, query){
 // Dezen functie cleaned alle data
 function cleanAllData() {
     // https://stackoverflow.com/questions/11385438/return-multiple-functions
-    let cleanYear = convertToYear(jsonResults);
-    let makeValueNumber = numberOfItemsPerYearAndCountry(jsonResults);
-    // let groupByContinent = groupCountriesByContinent(jsonResults);
-    return cleanYear && makeValueNumber
+    return convertToYear(jsonResults);
 }
 
 // Eerste functie van cleanAllData() die loopt over de items in de array
@@ -183,29 +203,14 @@ function deleteUnformattedData(array) {
 }
 
 // Tweede functie van cleanAllData()
-function numberOfItemsPerYearAndCountry(item) {
-    item.map(el => {
-        el.choCount.value = parseInt(el.choCount.value)
+function numberOfItemsPerCountry(country) {
+    let totalObjectCount = 0;
+    country.forEach(el => {
+        el.choCount = Number(el.choCount)
+        totalObjectCount = totalObjectCount + el.choCount;
     })
-    return item
+    return totalObjectCount
 }
-
-// function groupCountriesByContinent(country) {
-//     country.map(el => {
-//         var countryValue = devideFourCountries(el.landLabel)
-//         if(countryValue === true) {
-//             countryValue.azie = true
-//         }
-//     })
-//     // let country = continent
-//     // return continent
-// }
-//
-// function devideFourCountries(continent) {
-//     var continentAzie = continent.value.includes("Indonesia", "Suriname")
-// }
-
-// einde opschonen van data
 
 
 //Nest the data per country

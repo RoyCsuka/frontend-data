@@ -38,7 +38,8 @@ const svg = select('svg')
 const mapSettings = {
     projection: geoNaturalEarth1(),
     circleDelay: 11,
-    circleSize: 6
+    circleSize: 6,
+    rotate: [-11,0]
 }
 
 makeVisualization()
@@ -47,20 +48,13 @@ makeVisualization()
 async function makeVisualization(){
     //Draw the map using a module
     drawMap(svg, mapSettings.projection)
-    const color = setupScales()
-    console.log(color("kaas"))
-    console.log(color(110))
     //Use the cleanedArr module to get and process our data
     let data = await cleanedArr(endpoint, query)
-    console.log("Transformed data:", data)
-    data.forEach(country => {
-        plotLocations(svg, country.values, mapSettings.projection, color)
-    })
-plotAll(data)}
 
-//Set up the scales we'll use
-function setupScales(){
-	return d3.scaleOrdinal(d3.schemeDark2)
+    data.forEach(country => {
+        // plotLocations(svg, country.values, mapSettings.projection)
+    })
+// plotAll(data)
 }
 
 //Todo: try this: https://stackoverflow.com/questions/7111584/using-nested-data-with-d3-js/7426206#7426206
@@ -70,7 +64,7 @@ function plotAll(data){
 }
 
 //Plot each location on the map with a circle
-function plotLocations(container, data, projection, color) {
+function plotLocations(container, data, projection) {
   svg
     .selectAll('.'+ data[0].landLabel)
     .data(data)
@@ -80,7 +74,6 @@ function plotLocations(container, data, projection, color) {
       .attr('cx', d => projection([d.long, d.lat])[0])
       .attr('cy', d => projection([d.long, d.lat])[1])
       .attr('r', '0px')
-      .style('fill', d => color(d.landLabel))
       .transition()
   			//Delay calculation is still a work in progress
         .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
