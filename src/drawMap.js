@@ -18,14 +18,15 @@ function drawContinents(container, pathGenerator) {
   d3.json('https://piwodlaiwo.github.io/topojson//world-continents.json').then(data => {
     const countries = feature(data, data.objects.continent);
     container
-      .selectAll('path')
-      .data(countries.features)
-      .enter()
-      .append('path')
-      .attr("class", function(data,i) {
-        data.properties.continent = data.properties.continent.toLowerCase().replace(/\s/g, '-');
-        return data.properties.continent;
-      })
-      .attr('d', pathGenerator)
+      .append('g')
+          .selectAll('path')
+          .data(countries.features)
+          .enter()
+          .append('path')
+          .attr("class", function(data,i) {
+            data.properties.continent = data.properties.continent.toLowerCase().replace(/\s/g, '-');
+            return data.properties.continent;
+          })
+          .attr('d', pathGenerator)
   })
 }

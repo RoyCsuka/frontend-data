@@ -239,7 +239,7 @@ function calculateAndGroup(source){
         .key(d => d.landLabel)
             .rollup(d => {
                 return {
-                    numberOfItemsPerCountry: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
+                    amountOfItems: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
                     country: d[0].landLabel,
                     lat: Number(d[0].lat),
                     long: Number(d[0].long)

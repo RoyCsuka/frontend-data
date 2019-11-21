@@ -54,13 +54,11 @@ async function makeVisualization(){
     const fields = data.map(d => { return d.key });
 
     data.forEach(century => {
-        console.log("Century loop", 
-            century.values.map(
-                countries => {
-                    console.log("Countries loop", countries.value)
-                    plotLocations(svg, countries.value, mapSettings.projection)
-                }
-            )
+        century.values.forEach(
+            countries => {
+                // console.log("Countries loop", countries.value)
+                plotLocations(svg, countries.value, mapSettings.projection)
+            }
         )
         // plotLocations(svg, century, mapSettings.projection)
     })
@@ -75,19 +73,20 @@ async function makeVisualization(){
 
 //Plot each location on the map with a circle
 function plotLocations(container, data, projection) {
-  svg
-    .selectAll('.'+ data.country)
-    .data(data)
-    .enter()
-    .append('circle')
-      .attr('class', data.country)
-      .attr('cx', d => projection([d.long, d.lat])[0])
-      .attr('cy', d => projection([d.long, d.lat])[1])
-      .attr('r', '0px')
-      .transition()
-  		//Delay calculation is still a work in progress
-        .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
-        .duration(1500)
-        .ease(d3.easeBounce)
-        .attr('r', mapSettings.circleSize+'px')
+    console.log(svg.selectAll('.' + data.country))
+    svg
+        .selectAll('.'+ data.country)
+        .data(data)
+        .enter()
+        .append('circle')
+            .attr('class', data.country)
+            .attr('cx', d => projection([d.long, d.lat])[0])
+            .attr('cy', d => projection([d.long, d.lat])[1])
+            .attr('r', '0px')
+            .transition()
+                //Delay calculation is still a work in progress
+                .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
+                .duration(1500)
+                .ease(d3.easeBounce)
+                .attr('r', mapSettings.circleSize+'px')
 }
