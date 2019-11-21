@@ -13,26 +13,24 @@ export async function cleanedArr(endpoint, query){
 	data = data.map(cleanData)
     console.log("cleanedData: ", data)
 
-	data = transformData(data)
-    console.log("transformedData: ", data)
+	// data = transformData(data)
+    // console.log("transformedData: ", data)
 
+    // data = data.map(country => {
+    //
+    //     let objectCountTotal = numberOfItemsPerCountry(country.values)
+    //     return {
+    //         countryLat: country.values[0].lat,
+    //         countryLong: country.values[0].long,
+    //         objectDate: country.values[0].date,
+    //         objectCountTotal: objectCountTotal,
+    //         country: country.key
+    //     }
+    // })
 
+    data = calculateAndGroup(data)
 
-    let test = numberOfItemsPerCountry(data[0].values)
-
-    data = data.map(country => {
-        
-        let objectCountTotal = numberOfItemsPerCountry(country.values)
-        return {
-            countryLat: country.values[0].lat,
-            countryLong: country.values[0].long,
-            objectDate: country.values[0].date,
-            objectCountTotal: objectCountTotal,
-            country: country.key
-        }
-    })
-
-    console.log(data)
+    console.log("End of cleanData", data)
 
     return data
 }
@@ -198,28 +196,6 @@ function deleteUnformattedData(array) {
  return finalArray
 }
 
-// Tel het aantal items per land bij elkaar op en maak er 1 waarde van.
-function numberOfItemsPerCountry(country) {
-    let totalObjectCount = 0;
-    country.forEach(el => {
-        el.choCount = Number(el.choCount)
-        totalObjectCount = totalObjectCount + el.choCount;
-    })
-    return totalObjectCount
-}
-
-
-//Nest the data per country
-function transformData(source){
-  let transformed =  d3.nest()
-		.key(function(d) { return d.landLabel; })
-		.entries(source);
-  transformed.forEach(country => {
-    country.amount = country.values.length
-  })
-  return transformed
-}
-
 //This function gets the nested value out of the object in each property
 // in our data
 function cleanData(row){
@@ -229,4 +205,46 @@ function cleanData(row){
 				result[key] = propValue.value
   	})
    return result
+}
+
+//Nest the data per country
+function transformData(source){
+    let transformed =  d3.nest()
+		.key(function(d) { return d.landLabel; })
+		.entries(source);
+    transformed.forEach(country => {
+        country.amount = country.values.length
+    })
+    return transformed
+}
+
+
+// Tel het aantal items per land bij elkaar op en maak er 1 waarde van.
+// function numberOfItemsPerCountry(country) {
+//     let totalObjectCount = 0;
+//     country.forEach(el => {
+//         el.choCount = Number(el.choCount)
+//         totalObjectCount += el.choCount;
+//     })
+//     return totalObjectCount
+// }
+
+//Nest the data per preference (this will be our x-axis value
+//Rollup data so we get averages and totals for each variable
+//Note: this could also be done when visualizing the values
+//    and we could make this pattern more functional by creating a mean and total function
+function calculateAndGroup(source){
+    let transformed =  d3.nest()
+    .key(d => d.date).sortKeys(d3.descending)
+        .key(d => d.landLabel)
+            .rollup(d => {
+                return {
+                    numberOfItemsPerCountry: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
+                    country: d[0].landLabel,
+                    lat: Number(d[0].lat),
+                    long: Number(d[0].long)
+                }
+            })
+        .entries(source);
+    return transformed
 }

@@ -50,31 +50,42 @@ async function makeVisualization(){
     //Use the cleanedArr module to get and process our data
     let data = await cleanedArr(endpoint, query)
 
-    data.forEach(country => {
-        // plotLocations(svg, country.values, mapSettings.projection)
+    // array van alle eeuw waardes
+    const fields = data.map(d => { return d.key });
+
+    data.forEach(century => {
+        console.log("Century loop", 
+            century.values.map(
+                countries => {
+                    console.log("Countries loop", countries.value)
+                    plotLocations(svg, countries.value, mapSettings.projection)
+                }
+            )
+        )
+        // plotLocations(svg, century, mapSettings.projection)
     })
 // plotAll(data)
 }
 
-//Todo: try this: https://stackoverflow.com/questions/7111584/using-nested-data-with-d3-js/7426206#7426206
-function plotAll(data){
- 	svg
-        .selectAll('circle').data.map(d => d.values)
-}
+// //Todo: try this: https://stackoverflow.com/questions/7111584/using-nested-data-with-d3-js/7426206#7426206
+// function plotAll(data){
+//     svg.selectAll('circle')
+//         .data.map(d => d.values)
+// }
 
 //Plot each location on the map with a circle
 function plotLocations(container, data, projection) {
   svg
-    .selectAll('.'+ data[0].landLabel)
+    .selectAll('.'+ data.country)
     .data(data)
     .enter()
     .append('circle')
-      .attr('class', data[0].landLabel)
+      .attr('class', data.country)
       .attr('cx', d => projection([d.long, d.lat])[0])
       .attr('cy', d => projection([d.long, d.lat])[1])
       .attr('r', '0px')
       .transition()
-  			//Delay calculation is still a work in progress
+  		//Delay calculation is still a work in progress
         .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
         .duration(1500)
         .ease(d3.easeBounce)
