@@ -18,17 +18,14 @@ body {
   stroke-opacity: 0.1;
 }
 
-.asia {
-    fill: #b4464a;
-}
-
 .north-america,
 .south-america {
     fill: #3c6046;
 }
 
-.europe {
-    fill: #474fb2;
+.europe,
+.asia {
+    fill: #b4464a;
 }
 
 .africa {

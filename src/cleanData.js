@@ -1,53 +1,88 @@
+// Voor local doeleinde
 import config from './queryResults.json'
 
+// local aanroepen
 const jsonResults = config.results.bindings
 
+// export functie zorgt voor database resultaten
 export async function cleanedArr(endpoint, query){
   //Load the data and return a promise which resolves with said data
 	let data = await loadData(endpoint, query)
     // console.log("raw data: ", data)
+
+    data = data.filter(entry => filterData(entry, "continentLabel"))
+
     // Cleaning of year, number of items and continent
     data = cleanAllData()
-    // console.log("cleaned data of items: ", data)
+    console.log("cleaned data of items: ", data)
 
 	data = data.map(cleanData)
-    console.log("cleanedData: ", data)
-
-	// data = transformData(data)
-    // console.log("transformedData: ", data)
-
-    // data = data.map(country => {
-    //
-    //     let objectCountTotal = numberOfItemsPerCountry(country.values)
-    //     return {
-    //         countryLat: country.values[0].lat,
-    //         countryLong: country.values[0].long,
-    //         objectDate: country.values[0].date,
-    //         objectCountTotal: objectCountTotal,
-    //         country: country.key
-    //     }
-    // })
+    // console.log("cleanedData: ", data)
 
     data = calculateAndGroup(data)
-
     console.log("End of cleanData", data)
 
     return data
 }
 
-// Haal data op en zet om in JSON
+
+// Haal data op en zet om in JSON met D3
 function loadData(url, query){
   return d3.json(url +"?query="+ encodeURIComponent(query) + "&format=json")
     .then(data => data.results.bindings)
 }
 
-// Dezen functie cleaned alle data
-function cleanAllData() {
-    // https://stackoverflow.com/questions/11385438/return-multiple-functions
-    return convertToYear(jsonResults);
+//Returns true for each row that has something filled in for the given property
+function filterData(row, property){
+    return (row[property] != "" && row[property] != undefined)
 }
 
-// Eerste functie van cleanAllData() die loopt over de items in de array
+
+// Dezen functie cleaned alle data
+function cleanAllData() {
+    let addContinentLatAndLong = addLatLongContinent(jsonResults);
+    let convertYears = convertToYear(jsonResults);
+    return addContinentLatAndLong && convertYears
+}
+
+// Eerste functie
+function addLatLongContinent(obj) {
+    obj.forEach(continent => {
+        var continentObj = continent.continentLabel
+        let contLat = "contLat";
+        let contLong = "contLong";
+
+        if(continentObj.value === "Azië") {
+            continent.contLat = {value: 34.047900};
+            continent.contLong = {value: -100.619700};
+        }
+        if(continentObj.value === "Afrika") {
+            continent[contLat] = {value: 8.390759};
+            continent[contLong] = {value: 20.316978};
+        }
+        if(continentObj.value === "Amerika") {
+            continent[contLat] = {value: 14.355760};
+            continent[contLong] = {value: -87.059610};
+        }
+        if(continentObj.value === "Eurazië") {
+            continent[contLat] = {value: 45.450700};
+            continent[contLong] = {value: 68.831900};
+        }
+        if(continentObj.value === "Antarctica") {
+            continent[contLat] = {value: -82.862800};
+            continent[contLong] = {value: 135.000000};
+        }
+        if(continentObj.value === "Oceanië") {
+            continent[contLat] = {value: -23.555147};
+            continent[contLong] = {value: 134.876390};
+        }
+
+    })
+    let newLatLongCont = obj;
+    return newLatLongCont
+}
+
+// Tweede functie van cleanAllData() die loopt over de items in de array
 function convertToYear(item) {
     item.forEach(el => {
         // Roept functie aan om alle gekke karakters schoon te maken
@@ -201,33 +236,13 @@ function deleteUnformattedData(array) {
 function cleanData(row){
    let result = {}
     Object.entries(row)
-    	.forEach(([key, propValue]) => {
-				result[key] = propValue.value
+        .forEach(([key, propValue]) => {
+            // console.log(result[key] = propValue.value)
+		    result[key] = propValue.value
   	})
-   return result
+    return result
 }
 
-//Nest the data per country
-function transformData(source){
-    let transformed =  d3.nest()
-		.key(function(d) { return d.landLabel; })
-		.entries(source);
-    transformed.forEach(country => {
-        country.amount = country.values.length
-    })
-    return transformed
-}
-
-
-// Tel het aantal items per land bij elkaar op en maak er 1 waarde van.
-// function numberOfItemsPerCountry(country) {
-//     let totalObjectCount = 0;
-//     country.forEach(el => {
-//         el.choCount = Number(el.choCount)
-//         totalObjectCount += el.choCount;
-//     })
-//     return totalObjectCount
-// }
 
 //Nest the data per preference (this will be our x-axis value
 //Rollup data so we get averages and totals for each variable
@@ -236,13 +251,16 @@ function transformData(source){
 function calculateAndGroup(source){
     let transformed =  d3.nest()
     .key(d => d.date).sortKeys(d3.descending)
-        .key(d => d.landLabel)
+        .key(d => d.continentLabel)
             .rollup(d => {
                 return {
-                    amountOfItems: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
+                    amountOfContinentItems: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
+                    contLat: d[0].contLat,
+                    contLong: d[0].contLong,
                     country: d[0].landLabel,
-                    lat: Number(d[0].lat),
-                    long: Number(d[0].long)
+                    countryLat: d[0].countryLat,
+                    countryLong: d[0].countryLong,
+                    continent: d[0].continentLabel
                 }
             })
         .entries(source);

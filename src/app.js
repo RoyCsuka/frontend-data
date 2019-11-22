@@ -17,18 +17,24 @@ PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX edm: <http://www.europeana.eu/schemas/edm/>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-# let op: geeft aantal van unieke combinaties van ?date en ?landLabel
-SELECT ?landLabel ?lat ?long ?date (COUNT(?cho) AS ?choCount) WHERE {
+SELECT ?landLabel ?countryLat ?countryLong ?continentLabel ?contLat ?contLong ?date (COUNT(?cho) AS ?choCount) WHERE {
    ?cho dct:created ?date;
         dct:spatial ?plaats .
- # We willen geen datums die de string [NI] bevatten
-   FILTER (!REGEX(?date, "[NI]")) . #zorgt ervoor dat de string "NI" niet wordt meegenomen
- # geef het label van het land waar de plaats ligt en de lat/long van het land
+
+  FILTER (!REGEX(?date, "[NI]")) .
+
    ?plaats skos:exactMatch/gn:parentCountry ?land .
-   ?land wgs84:lat ?lat .
-   ?land wgs84:long ?long .
+   ?land wgs84:lat ?countryLat .
+   ?land wgs84:long ?countryLong .
    ?land gn:name ?landLabel .
-} GROUP BY ?date ?landLabel ?lat ?long
+
+  <https://hdl.handle.net/20.500.11840/termmaster2> skos:narrower ?continent .
+  ?continent skos:prefLabel ?continentLabel .
+  ?continent skos:narrower* ?place .
+  ?cho dct:spatial ?place .
+
+
+} GROUP BY ?date ?landLabel ?countryLat ?countryLong ?continentLabel ?contLat ?contLong
 ORDER BY DESC(?choCount)`
 
 // Mijn end-point
@@ -53,40 +59,91 @@ async function makeVisualization(){
     // array van alle eeuw waardes
     const fields = data.map(d => { return d.key });
 
+
     data.forEach(century => {
         century.values.forEach(
             countries => {
                 // console.log("Countries loop", countries.value)
-                plotLocations(svg, countries.value, mapSettings.projection)
+                plotLocations(svg, [countries.value], mapSettings.projection)
             }
         )
         // plotLocations(svg, century, mapSettings.projection)
     })
-// plotAll(data)
+    setUpCenturys(fields)
+    // setUpRange()
+
 }
 
-// //Todo: try this: https://stackoverflow.com/questions/7111584/using-nested-data-with-d3-js/7426206#7426206
-// function plotAll(data){
-//     svg.selectAll('circle')
-//         .data.map(d => d.values)
+
+//This awesome function makes dynamic input options based on our data!
+//You can also create the options by hand if you can't follow what happens here
+function setUpCenturys(fields) {
+    const form = d3.select('form')
+        .style('left', '16px')
+        .style('top', '16px')
+        .on('change', selectionChanged)
+            .selectAll('input')
+            .data(fields)
+            .enter()
+            .append('input')
+            .attr('type', 'radio')
+            .attr('name', 'century')
+            .attr('value', d => d)
+            .text(d => d)
+    console.log("form",form)
+}
+
+
+//This function will change the graph when the user selects another variable
+function selectionChanged(){
+  //'this' refers to the form element!
+  console.log("Changing graph to reflect this variable", this.value)
+    // yVar = this.value
+    setupScales()
+    //y.domain([0, d3.max( data.map(preference => preference.value[yVar]) )] );
+
+    // svg.selectAll('.bar')
+    //     .attr('y', d => y(d.value[yVar]))
+    //     .attr('height', d => height - y(d.value[yVar]))
+    // svg.select('.axis-y')
+    //     .call(d3.axisLeft(y).ticks(10))
+}
+
+
+// //Set up the scales we'll use
+// function setupScales(){
+//     //We'll set the x domain to the different preferences
+    // x.domain(data.map(preference => preference.key))
+//     //The y-domain is set to the min and max of the current y variable
+//     y.domain([0, d3.max( data.map(preference => preference.value[yVar]) )] )
+//     x.rangeRound([0, width]);
+//     y.rangeRound([height, 0]);
 // }
 
 //Plot each location on the map with a circle
 function plotLocations(container, data, projection) {
-    console.log(svg.selectAll('.' + data.country))
+    // console.log("Checking", data[0].amountOfContinentItems)
     svg
-        .selectAll('.'+ data.country)
-        .data(data)
+        .selectAll('.'+ [data][0].country)
+        .data([data][0])
         .enter()
         .append('circle')
-            .attr('class', data.country)
-            .attr('cx', d => projection([d.long, d.lat])[0])
-            .attr('cy', d => projection([d.long, d.lat])[1])
+            .attr('class', data.continent)
+            .attr('cx', d => projection([d.contLong, d.contLat])[0])
+            .attr('cy', d => projection([d.contLong, d.contLat])[1])
             .attr('r', '0px')
             .transition()
-                //Delay calculation is still a work in progress
+                // Delay calculation is still a work in progress
                 .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
                 .duration(1500)
                 .ease(d3.easeBounce)
                 .attr('r', mapSettings.circleSize+'px')
+    svg
+        .selectAll('.'+ [data][0].country)
+        .data([data][0])
+        .enter()
+            .append('text')
+                .attr('x', d => projection([d.contLong, d.contLat])[0])
+                .attr('y', d => projection([d.contLong, d.contLat])[1])
+                .text(data[0].amountOfContinentItems)
 }
