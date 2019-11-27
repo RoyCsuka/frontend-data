@@ -52,7 +52,7 @@ let scale = d3.scaleLinear()
 // Global data variable
 let data
 
-// yVar
+// standaard waarde
 let centuryVar = 2000;
 
 
@@ -73,7 +73,6 @@ async function makeVisualization(){
 
 
     setUpCenturys(data)
-    getPlotLocations(data)
 
 }
 
@@ -91,6 +90,7 @@ function setUpCenturys(data) {
                     .append('span')
                         .text(d => d.key)
                     .append('input')
+                        .property('checked', d => d.key == centuryVar)
                         .attr('type', 'radio')
                         .attr('name', 'century')
                         .attr('value', d => d.key)
@@ -102,8 +102,8 @@ function setUpCenturys(data) {
 //This function will change the graph when the user selects another variable
 function selectionChanged(){
     //'this' refers to the form element!
-    // console.log("Geselecteerde waarde van Form", this.value)
-    let centuryVar = parseInt(this.value)
+    centuryVar = this ? parseInt(this.value) : centuryVar
+    console.log("Dit is de huidige century ",centuryVar)
     // Laurens heeft mij hiermee geholpen
     let arrOfSelectedData = data.find(element => element.key == this.value)
     // veranderd de tekst boven aan
@@ -123,78 +123,53 @@ function selectionChanged(){
             return d3.ascending(a.value, b.value);
         })[0].value;
 
-    console.log("YES", amountOfCountryValues, "Max ", max, "Min ", min)
+    let amountOfAllItems = d3.sum(amountOfCountryValues)
+    // veranderd de tekst boven aan
+    document.querySelector("p b:first-of-type").innerHTML =  amountOfAllItems;
 
-    // changeCircleSize([arrOfSelectedData])
     arrOfSelectedData.values.forEach(countries => {
-        plotLocations(svg, [countries.value], mapSettings.projection)
-    })
-    return centuryVar
-}
-
-
-
-function getPlotLocations(data) {
-    console.log("Eerste plot circles", data)
-    data.forEach(century => {
-        century.values.forEach(
-            continents => {
-                plotLocations(svg, [continents.value], mapSettings.projection)
-            }
-        )
+        plotLocations(svg, [countries.value], mapSettings.projection, min, max)
     })
 }
+
 
 //Plot each location on the map with a circle
-function plotLocations(container, data, projection) {
+function plotLocations(container, data, projection, min, max) {
 
     let filterdNestedData = [data][0].filter(e => e.date === centuryVar)
 
-    const scale = d3.scaleLinear().domain([ 1, 150000 ]).range([ 6, 80 ]);
+    const scale = d3.scaleLinear().domain([ min, max ]).range([ 6, 80 ]);
 
 
 
     //geneste tekst en circle van: http://bl.ocks.org/ChrisJamesC/4474971
     let circles = svg.selectAll('.' + [data][0][0].country)
         .data([data][0])
+        console.log(data[0])
 
-    let elemEnter = circles.enter()
+    let elemEnter = circles
+        .enter()
         .append("g")
         .attr('class', [data][0][0].date)
 
-    let circle = elemEnter.append('circle')
+    let circle = elemEnter
+        .append('circle')
         // .attr('class', [data][0][0].continent)
         .attr('cx', d => projection([d.contLong, d.contLat])[0])
         .attr('cy', d => projection([d.contLong, d.contLat])[1])
+        //https://stackoverflow.com/questions/9481497/understanding-how-d3-js-binds-data-to-nodes
         .attr('r', function(d) { return scale([data][0][0].amountOfCountryItems) })
 
-
-    elemEnter.append('text')
+    elemEnter
+        .append('text')
         .attr('x', d => projection([d.contLong, d.contLat])[0])
         .attr('y', d => projection([d.contLong, d.contLat])[1])
             .text([data][0][0].amountOfCountryItems)
 
+    // selectAll('g')
+    //     .exit()
+    //     .remove()
 
-    // Back up oude code
-    // svg
-    //     .selectAll('.'+ [data][0].country)
-    //     .data([data][0])
-    //     .enter()
-    //     .append('circle')
-    //         .attr('class', data.continent)
-    //         .attr('cx', d => projection([d.contLong, d.contLat])[0])
-    //         .attr('cy', d => projection([d.contLong, d.contLat])[1])
-    //         .attr('r', '0px')
-    //         .transition()
-    //             // Delay calculation is still a work in progress
-    //             .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
-    //             .duration(1500)
-    //             .ease(d3.easeBounce)
-    //             .attr('r', mapSettings.circleSize+'px')
-    //
-    //     .append('text')
-    //         .attr('x', d => projection([d.contLong, d.contLat])[0])
-    //         .attr('y', d => projection([d.contLong, d.contLat])[1])
-    //         .text(data[0].amountOfContinentItems)
+    // updateFunction()
 
 }
