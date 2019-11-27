@@ -23,13 +23,16 @@ body {
     fill: #3c6046;
 }
 
-.europe,
 .asia {
     fill: #b4464a;
 }
 
 .africa {
     fill: #cf9b35;
+}
+
+.europe {
+    fill: #4b20e2;
 }
 
 .oceania {

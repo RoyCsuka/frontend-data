@@ -14,7 +14,7 @@ export async function cleanedArr(endpoint, query){
 
     // Cleaning of year, number of items and continent
     data = cleanAllData()
-    console.log("cleaned data of items: ", data)
+    // console.log("cleaned data of items: ", data)
 
 	data = data.map(cleanData)
     // console.log("cleanedData: ", data)
@@ -53,8 +53,8 @@ function addLatLongContinent(obj) {
         let contLong = "contLong";
 
         if(continentObj.value === "Azië") {
-            continent.contLat = {value: 34.047900};
-            continent.contLong = {value: -100.619700};
+            continent.contLat = {value: 36.032689};
+            continent.contLong = {value: 100.527344};
         }
         if(continentObj.value === "Afrika") {
             continent[contLat] = {value: 8.390759};
@@ -65,8 +65,8 @@ function addLatLongContinent(obj) {
             continent[contLong] = {value: -87.059610};
         }
         if(continentObj.value === "Eurazië") {
-            continent[contLat] = {value: 45.450700};
-            continent[contLong] = {value: 68.831900};
+            continent[contLat] = {value: 55.927454};
+            continent[contLong] = {value: 14.968750};
         }
         if(continentObj.value === "Antarctica") {
             continent[contLat] = {value: -82.862800};
@@ -254,13 +254,14 @@ function calculateAndGroup(source){
         .key(d => d.continentLabel)
             .rollup(d => {
                 return {
-                    amountOfContinentItems: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
+                    amountOfCountryItems: Number(d3.sum(d.map(itemsPerCountry => itemsPerCountry.choCount))),
                     contLat: d[0].contLat,
                     contLong: d[0].contLong,
                     country: d[0].landLabel,
                     countryLat: d[0].countryLat,
                     countryLong: d[0].countryLong,
-                    continent: d[0].continentLabel
+                    continent: d[0].continentLabel,
+                    date: d[0].date
                 }
             })
         .entries(source);

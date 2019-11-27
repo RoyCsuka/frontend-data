@@ -43,9 +43,18 @@ const svg = select('svg')
 
 const mapSettings = {
     projection: geoNaturalEarth1().rotate([-11,0]),
-    circleDelay: 11,
-    circleSize: 6
+    circleDelay: 11
 }
+
+// Scales
+let scale = d3.scaleLinear()
+
+// Global data variable
+let data
+
+// yVar
+let centuryVar = 2000;
+
 
 makeVisualization()
 
@@ -54,96 +63,138 @@ async function makeVisualization(){
     //Draw the map using a module
     drawMap(svg, mapSettings.projection)
     //Use the cleanedArr module to get and process our data
-    let data = await cleanedArr(endpoint, query)
+    data = await cleanedArr(endpoint, query)
 
     // array van alle eeuw waardes
-    const fields = data.map(d => { return d.key });
+    // const fields = data.map(d => { return d.key });
+
+    // var min = d3.min(data.amountOfCountryItems, function (d) { return d.amountOfCountryItems; });
+    // var max = d3.max(data.amountOfCountryItems, function (d) { return d.amountOfCountryItems; });
 
 
-    data.forEach(century => {
-        century.values.forEach(
-            countries => {
-                // console.log("Countries loop", countries.value)
-                plotLocations(svg, [countries.value], mapSettings.projection)
-            }
-        )
-        // plotLocations(svg, century, mapSettings.projection)
-    })
-    setUpCenturys(fields)
-    // setUpRange()
+    setUpCenturys(data)
+    getPlotLocations(data)
 
 }
 
 
 //This awesome function makes dynamic input options based on our data!
 //You can also create the options by hand if you can't follow what happens here
-function setUpCenturys(fields) {
+function setUpCenturys(data) {
     const form = d3.select('form')
         .style('left', '16px')
         .style('top', '16px')
-        .on('change', selectionChanged)
             .selectAll('input')
-            .data(fields)
+            .data(data)
             .enter()
-            .append('input')
-            .attr('type', 'radio')
-            .attr('name', 'century')
-            .attr('value', d => d)
-            .text(d => d)
-    console.log("form",form)
+                .append('label')
+                    .append('span')
+                        .text(d => d.key)
+                    .append('input')
+                        .attr('type', 'radio')
+                        .attr('name', 'century')
+                        .attr('value', d => d.key)
+                            .on('change', selectionChanged)
+
 }
 
 
 //This function will change the graph when the user selects another variable
 function selectionChanged(){
-  //'this' refers to the form element!
-  console.log("Changing graph to reflect this variable", this.value)
-    // yVar = this.value
-    setupScales()
-    //y.domain([0, d3.max( data.map(preference => preference.value[yVar]) )] );
+    //'this' refers to the form element!
+    // console.log("Geselecteerde waarde van Form", this.value)
+    let centuryVar = parseInt(this.value)
+    // Laurens heeft mij hiermee geholpen
+    let arrOfSelectedData = data.find(element => element.key == this.value)
+    // veranderd de tekst boven aan
+    document.querySelector("p b:last-of-type").innerHTML =  centuryVar + " & " + (centuryVar + 100);
 
-    // svg.selectAll('.bar')
-    //     .attr('y', d => y(d.value[yVar]))
-    //     .attr('height', d => height - y(d.value[yVar]))
-    // svg.select('.axis-y')
-    //     .call(d3.axisLeft(y).ticks(10))
+    let amountOfCountryValues = arrOfSelectedData.values.map(e => e.value).map(v => v.amountOfCountryItems)
+
+    // Credits to: https://stackoverflow.com/questions/11488194/how-to-use-d3-min-and-d3-max-within-a-d3-json-command/24744689
+    // Check min en max van huidige selectie
+    // create an array of key, value objects
+    let max = d3.entries(amountOfCountryValues)
+        .sort(function(a, b) {
+            return d3.descending(a.value, b.value);
+        })[0].value;
+    let min = d3.entries(amountOfCountryValues)
+        .sort(function(a, b) {
+            return d3.ascending(a.value, b.value);
+        })[0].value;
+
+    console.log("YES", amountOfCountryValues, "Max ", max, "Min ", min)
+
+    // changeCircleSize([arrOfSelectedData])
+    arrOfSelectedData.values.forEach(countries => {
+        plotLocations(svg, [countries.value], mapSettings.projection)
+    })
+    return centuryVar
 }
 
 
-// //Set up the scales we'll use
-// function setupScales(){
-//     //We'll set the x domain to the different preferences
-    // x.domain(data.map(preference => preference.key))
-//     //The y-domain is set to the min and max of the current y variable
-//     y.domain([0, d3.max( data.map(preference => preference.value[yVar]) )] )
-//     x.rangeRound([0, width]);
-//     y.rangeRound([height, 0]);
-// }
+
+function getPlotLocations(data) {
+    console.log("Eerste plot circles", data)
+    data.forEach(century => {
+        century.values.forEach(
+            continents => {
+                plotLocations(svg, [continents.value], mapSettings.projection)
+            }
+        )
+    })
+}
 
 //Plot each location on the map with a circle
 function plotLocations(container, data, projection) {
-    // console.log("Checking", data[0].amountOfContinentItems)
-    svg
-        .selectAll('.'+ [data][0].country)
+
+    let filterdNestedData = [data][0].filter(e => e.date === centuryVar)
+
+    const scale = d3.scaleLinear().domain([ 1, 150000 ]).range([ 6, 80 ]);
+
+
+
+    //geneste tekst en circle van: http://bl.ocks.org/ChrisJamesC/4474971
+    let circles = svg.selectAll('.' + [data][0][0].country)
         .data([data][0])
-        .enter()
-        .append('circle')
-            .attr('class', data.continent)
-            .attr('cx', d => projection([d.contLong, d.contLat])[0])
-            .attr('cy', d => projection([d.contLong, d.contLat])[1])
-            .attr('r', '0px')
-            .transition()
-                // Delay calculation is still a work in progress
-                .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
-                .duration(1500)
-                .ease(d3.easeBounce)
-                .attr('r', mapSettings.circleSize+'px')
-    svg
-        .selectAll('.'+ [data][0].country)
-        .data([data][0])
-        .enter()
-            .append('text')
-                .attr('x', d => projection([d.contLong, d.contLat])[0])
-                .attr('y', d => projection([d.contLong, d.contLat])[1])
-                .text(data[0].amountOfContinentItems)
+
+    let elemEnter = circles.enter()
+        .append("g")
+        .attr('class', [data][0][0].date)
+
+    let circle = elemEnter.append('circle')
+        // .attr('class', [data][0][0].continent)
+        .attr('cx', d => projection([d.contLong, d.contLat])[0])
+        .attr('cy', d => projection([d.contLong, d.contLat])[1])
+        .attr('r', function(d) { return scale([data][0][0].amountOfCountryItems) })
+
+
+    elemEnter.append('text')
+        .attr('x', d => projection([d.contLong, d.contLat])[0])
+        .attr('y', d => projection([d.contLong, d.contLat])[1])
+            .text([data][0][0].amountOfCountryItems)
+
+
+    // Back up oude code
+    // svg
+    //     .selectAll('.'+ [data][0].country)
+    //     .data([data][0])
+    //     .enter()
+    //     .append('circle')
+    //         .attr('class', data.continent)
+    //         .attr('cx', d => projection([d.contLong, d.contLat])[0])
+    //         .attr('cy', d => projection([d.contLong, d.contLat])[1])
+    //         .attr('r', '0px')
+    //         .transition()
+    //             // Delay calculation is still a work in progress
+    //             .delay(d => svg.selectAll('circle').size() * mapSettings.circleDelay)//(d, i) => i * mapSettings.circleDelay)
+    //             .duration(1500)
+    //             .ease(d3.easeBounce)
+    //             .attr('r', mapSettings.circleSize+'px')
+    //
+    //     .append('text')
+    //         .attr('x', d => projection([d.contLong, d.contLat])[0])
+    //         .attr('y', d => projection([d.contLong, d.contLat])[1])
+    //         .text(data[0].amountOfContinentItems)
+
 }
