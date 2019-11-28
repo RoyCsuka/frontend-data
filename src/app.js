@@ -46,9 +46,6 @@ const mapSettings = {
     circleDelay: 11
 }
 
-// Scales
-let scale = d3.scaleLinear()
-
 // Global data variable
 let data
 
@@ -65,51 +62,60 @@ async function makeVisualization(){
     //Use the cleanedArr module to get and process our data
     data = await cleanedArr(endpoint, query)
 
-    // array van alle eeuw waardes
-    // const fields = data.map(d => { return d.key });
-
-    // var min = d3.min(data.amountOfCountryItems, function (d) { return d.amountOfCountryItems; });
-    // var max = d3.max(data.amountOfCountryItems, function (d) { return d.amountOfCountryItems; });
-
-
     setUpCenturys(data)
+    // klik op het eerste element en zorg ervoor dat de onchange wordt getriggerd
+    clickFirstItem()
 
+}
+
+function clickFirstItem(){
+    document.querySelector("#form label:first-of-type span input").click();
 }
 
 
 //This awesome function makes dynamic input options based on our data!
 //You can also create the options by hand if you can't follow what happens here
 function setUpCenturys(data) {
+
     const form = d3.select('form')
-        .style('left', '16px')
-        .style('top', '16px')
-            .selectAll('input')
-            .data(data)
-            .enter()
-                .append('label')
-                    .append('span')
-                        .text(d => d.key)
-                    .append('input')
-                        .property('checked', d => d.key == centuryVar)
-                        .attr('type', 'radio')
-                        .attr('name', 'century')
-                        .attr('value', d => d.key)
-                            .on('change', selectionChanged)
+        .selectAll('input')
+        .data(data)
+        .enter()
+            .append('label')
+                .append('span')
+                    .text(d => d.key)
+                .append('input')
+                    .attr('type', 'radio')
+                    .attr('name', 'century')
+                    .attr('value', d => d.key)
+                    .on('change', selectionChanged)
 
 }
 
-
+// Code van Laurens
 //This function will change the graph when the user selects another variable
 function selectionChanged(){
     //'this' refers to the form element!
     centuryVar = this ? parseInt(this.value) : centuryVar
-    console.log("Dit is de huidige century ",centuryVar)
+
+    // add class if it doens't exist else add class to this element
+    if (document.querySelector('.active')) {
+        document.querySelector("form .active").classList.remove('active')
+        this.closest('span').closest('label').classList.add('active')
+    } else {
+        this.closest('span').closest('label').classList.add('active')
+    }
+
     // Laurens heeft mij hiermee geholpen
-    let arrOfSelectedData = data.find(element => element.key == this.value)
+    let arrOfSelectedData = data.find(element => element.key == this.value);
     // veranderd de tekst boven aan
     document.querySelector("p b:last-of-type").innerHTML =  centuryVar + " & " + (centuryVar + 100);
 
-    let amountOfCountryValues = arrOfSelectedData.values.map(e => e.value).map(v => v.amountOfCountryItems)
+    let amountOfCountryValues = arrOfSelectedData.values.map(e => e.value).map(v => v.amountOfCountryItems);
+
+    let amountOfCountryItems = arrOfSelectedData.values.map(e => e.value);
+
+    console.log("Map ", amountOfCountryValues)
 
     // Credits to: https://stackoverflow.com/questions/11488194/how-to-use-d3-min-and-d3-max-within-a-d3-json-command/24744689
     // Check min en max van huidige selectie
@@ -125,51 +131,67 @@ function selectionChanged(){
 
     let amountOfAllItems = d3.sum(amountOfCountryValues)
     // veranderd de tekst boven aan
-    document.querySelector("p b:first-of-type").innerHTML =  amountOfAllItems;
+    document.querySelector('p b:first-of-type').innerHTML =  amountOfAllItems;
 
-    arrOfSelectedData.values.forEach(countries => {
-        plotLocations(svg, [countries.value], mapSettings.projection, min, max)
-    })
+    // props van Kris
+    const flattened = arrOfSelectedData.values.reduce((newArray, countries) => {
+        newArray.push(countries.value)
+        return newArray.flat()
+    }, [])
+
+    moveWhiteBlok()
+
+    plotLocations(svg, flattened, mapSettings.projection, min, max)
+
+}
+
+function moveWhiteBlok(){
+    let yes = document.querySelector('.active').getBoundingClientRect().top;
+    document.querySelector('.active-bk').style.top = yes - 63.40625;
 }
 
 
 //Plot each location on the map with a circle
 function plotLocations(container, data, projection, min, max) {
 
-    let filterdNestedData = [data][0].filter(e => e.date === centuryVar)
-
-    const scale = d3.scaleLinear().domain([ min, max ]).range([ 6, 80 ]);
+    const scale = d3.scaleLinear().domain([ min, max ]).range([ 15, 90 ]);
 
 
-
-    //geneste tekst en circle van: http://bl.ocks.org/ChrisJamesC/4474971
-    let circles = svg.selectAll('.' + [data][0][0].country)
-        .data([data][0])
-        console.log(data[0])
-
-    let elemEnter = circles
-        .enter()
-        .append("g")
-        .attr('class', [data][0][0].date)
-
-    let circle = elemEnter
-        .append('circle')
-        // .attr('class', [data][0][0].continent)
+    let circles = svg.selectAll('circle').data([data][0])
+    let text = svg.selectAll('text').data([data][0])
+    // update
+    circles
         .attr('cx', d => projection([d.contLong, d.contLat])[0])
         .attr('cy', d => projection([d.contLong, d.contLat])[1])
-        //https://stackoverflow.com/questions/9481497/understanding-how-d3-js-binds-data-to-nodes
-        .attr('r', function(d) { return scale([data][0][0].amountOfCountryItems) })
+        .attr('r', function(d) { return scale(d.amountOfCountryItems) })
 
-    elemEnter
-        .append('text')
+    text
         .attr('x', d => projection([d.contLong, d.contLat])[0])
         .attr('y', d => projection([d.contLong, d.contLat])[1])
-            .text([data][0][0].amountOfCountryItems)
+            .text(d => d.amountOfCountryItems)
 
-    // selectAll('g')
-    //     .exit()
-    //     .remove()
+    // enter
+    circles
+        .enter()
+        .append('circle')
+            .attr('cx', d => projection([d.contLong, d.contLat])[0])
+            .attr('cy', d => projection([d.contLong, d.contLat])[1])
+            .attr('r', function(d) { return scale(d.amountOfCountryItems) })
+            .attr('opacity', 0.8)
+    text
+        .enter()
+        .append('text')
+            .attr('x', d => projection([d.contLong, d.contLat])[0])
+            .attr('y', d => projection([d.contLong, d.contLat])[1])
+                .text(d => d.amountOfCountryItems)
 
-    // updateFunction()
+    // exit
+    circles
+        .exit()
+        .remove()
+    text
+        .exit()
+        .remove()
+
 
 }
