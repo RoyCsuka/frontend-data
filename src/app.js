@@ -145,9 +145,11 @@ function selectionChanged(){
 
 }
 
+// https://stackoverflow.com/questions/9880472/determine-distance-from-the-top-of-a-div-to-top-of-window-with-javascript
+// https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
 function moveWhiteBlok(){
-    let yes = document.querySelector('.active').getBoundingClientRect().top;
-    document.querySelector('.active-bk').style.top = yes - 63.40625;
+    let getTop = document.querySelector('.active').getBoundingClientRect().top;
+    document.querySelector('.active-bk').style.top = getTop - 63.40625;
 }
 
 

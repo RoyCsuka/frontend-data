@@ -56,7 +56,7 @@ form label span {
     position: absolute;
     width: 100%;
     height: 100px;
-    top: 54.4062px;
+    top: 0;
     background-color: white;
     z-index: -1;
     transition: 0.5s;
@@ -129,6 +129,7 @@ circle {
     fill: black;
 }
 
+/* http://bl.ocks.org/emmasaunders/d682fd84b67b304219e49b1e8385b1f8  */
 text {
     fill: white;
     font-family: 'Roboto', sans-serif;
