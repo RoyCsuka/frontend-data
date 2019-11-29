@@ -67,7 +67,6 @@ function transformData(source){
 	.key(d => d.preference)
 	   .rollup(d => {
 		return {
-		   amount: d.length,
 		   brothersTotal: d3.sum(d.map(correspondent => correspondent.brothers))
 		}
 	   })
@@ -79,7 +78,11 @@ function transformData(source){
 </details>
 
 <details><summary>Wat mijn code is geworden:</summary>
-Ten opzichte van laurens zijn code heb ik het anders genest door ```.key(d => d.continentLabel)``` te gebruiken.
+Ten opzichte van laurens zijn code heb ik het anders genest door de onderstaande code opnieuw te gebruiken:
+
+```.key(d => d.continentLabel)```
+
+Hier is de volledige functie:
 	    
 ```
 function calculateAndGroup(source){
