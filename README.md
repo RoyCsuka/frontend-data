@@ -1,13 +1,13 @@
 # Tech-track - Frontend Data
 ## De opdracht
-Deze twee weken heb ik mij bezig gehouden met het verder uitwerken van het [concept van afgelopen twee weken](https://github.com/RoyCsuka/functional-programming). Deze twee weken staan in het teken van de interactie verwerken in je concept die in deze readme te vinden is. De visualisatie bevat de data van de (organisatie wereldculturen)[http://collectie.wereldculturen.nl/]. De data bestaat uit objecten van vier museums in Nederland.
+Deze twee weken heb ik mij bezig gehouden met het verder uitwerken van het [concept van afgelopen twee weken](https://github.com/RoyCsuka/functional-programming). Deze twee weken staan in het teken van de interactie verwerken in je concept die in deze readme te vinden is. De visualisatie bevat de data van de [organisatie wereldculturen](http://collectie.wereldculturen.nl/). De data bestaat uit objecten van vier museums in Nederland.
 
 # Leerdoelen
 - In D3 werken en een interactieve datavisualisatie maken
 - Met .update(), .enter() en .exit() werken
 - Een visualisatie maken die op zich zelf al duidelijk is
 
-Lees [hier meer][https://github.com/RoyCsuka/frontend-data/wiki] over mijn begrip en toepassing op .update(), .enter() en .exit()
+Lees [hier meer](https://github.com/RoyCsuka/frontend-data/wiki) over mijn begrip en toepassing op .update(), .enter() en .exit()
 
 # Concept
 Mijn concept focust zich op het aantal items laten zien op basis van herkomst in combinatie met tijd. Als visuele uitwerking heb ik gekozen voor een map (zie afbeeldingen hieronder).
@@ -16,9 +16,9 @@ Mijn concept focust zich op het aantal items laten zien op basis van herkomst in
 
 ![Concept uitwerking scherm 2](https://github.com/RoyCsuka/assets/blob/master/concept-maps-v2_4.jpg)
 
-# Eind resultaat op donderdag 28 november 2019 16:00
-Het resultaat van de afgelopen twee weken is hieronder te zien en het proces is te volgen in mijn (wiki)[https://github.com/RoyCsuka/frontend-data/wiki]
-![Resultaat](https://github.com/RoyCsuka/assets/blob/master/resultaat.png)
+# Eind resultaat op donderdag 28 november 2019 - 16:00
+Het resultaat van de afgelopen twee weken is hieronder te zien en het proces is te volgen in mijn [wiki](https://github.com/RoyCsuka/frontend-data/wiki)
+![Resultaat](https://i.gyazo.com/fb77f61a4fc58dff346a9786d4f3547d.gif)
 
 # Data
 ## Endpoint resultaten
@@ -26,12 +26,13 @@ Als ik mijn SPARQL query inlaad via mijn endpoint (mijn gebruikte endpoint):
 ```https://api.data.netwerkdigitaalerfgoed.nl/datasets/ivo/NMVW/services/NMVW-14/sparql```
 
 en deze data in de console.log() zette kreeg ik de volgende resultaten te zien:
-![Image of raw data](https://gyazo.com/7c48f2b9bcbb2aa7a2ad6277d9c3dbe6)
+![Image of raw data](https://i.gyazo.com/7c48f2b9bcbb2aa7a2ad6277d9c3dbe6.png)
 
 Daarna heb ik mijn cleanData() functie gerund. Deze functie maakt de jaartallen schoon en  om de data te cleanen en kreeg ik <details><summary>de volgende resultaten te zien:</summary>
-![Image of cleaned data](https://gyazo.com/b1f6450b51d5a8bf8e87d1475501a397)
+![Image of cleaned data](https://i.gyazo.com/b1f6450b51d5a8bf8e87d1475501a397.png)
 </details>
 
+## Data transformeren
 Vervolgens heb ik de data een niveau hoger gebracht met de volgende code:
 ```
 //This function gets the nested value out of the object in each property
@@ -47,13 +48,14 @@ function cleanData(row){
 }
 ```
 <details><summary>resultaat:</summary>
-![Cleand data](https://gyazo.com/6b44f33eb4f58b33949f5d130ae737b5)
+![Cleand data](https://i.gyazo.com/6b44f33eb4f58b33949f5d130ae737b5.png)
 </details>
 
+## Data nesten
 En als laatste stap heb ik de data genest met D3 op de volgende manier:
 
 <details><summary>Wat ik gebruikt heb van Laurens zijn code:</summary>
-    <p>
+	
 ```
 function transformData(source){
   let transformed =  d3.nest()
@@ -68,12 +70,12 @@ function transformData(source){
   return transformed
 }
 ```
-            </p>
+
 </details>
 
 <details><summary>Wat mijn code is geworden:</summary>
-    <p>
-        Ten opzichte van laurens zijn code heb ik het anders genest door .key(d => d.continentLabel) te gebruiken.
+Ten opzichte van laurens zijn code heb ik het anders genest door .key(d => d.continentLabel) te gebruiken.
+	    
 ```
 function calculateAndGroup(source){
     let transformed =  d3.nest()
@@ -95,14 +97,16 @@ function calculateAndGroup(source){
     return transformed
 }
 ```
-    </p>
+
 </details>
 
 En hieronder is het resultaat te zien:
-![Getransformeerde data](https://gyazo.com/11316e6de779cec27c4bda24fade90a7)
+![Getransformeerde data](https://i.gyazo.com/11316e6de779cec27c4bda24fade90a7.png)
 
+## Een functie die functies runt om de data op te schonen. (Deze funtie expoteert naar app.js)
 Om de data extern in te laden heb ik rollup gebruikt en hoef ik alleen maar de functies te runnen met de data erin. 
-<details><summary>Een functie die functies runt om de data op te schonen. (Deze funtie expoteert naar app.js)</summary>
+<details><summary>De functie:</summary>
+	
 ```
 // local aanroepen
 const jsonResults = config.results.bindings
@@ -128,7 +132,6 @@ export async function cleanedArr(endpoint, query){
     return data
 }
 ```
-```
 </details>
 
 ## Taken
@@ -142,12 +145,14 @@ Hieronder een lijstje van wat ik stap voor stap gefixt heb.
 
 ## Opschonen met JavaScript
 In mijn vorige [Wiki leg ik stap voor stap uit](https://github.com/RoyCsuka/functional-programming/wiki/Data-cleaning) hoe ik mijn data heb schoongemaakt. I.v.m. tijdsnood heb ik de "v.chr", "n.chr", "bc" en "ad" data waardes en niet schoon kunnen maken. Daarom heb ik ervoor gekozen om deze if statement nog te defineren voordat ik de data terug geef aan mijn main functie.
+
 ```
 if (item.date.value.toString().length === 4 && item.date.value <= 2019 && item.date.value >= 0) {
     // console.log(item.date.value)
     return item
 }
 ```
+
 Hierdoor is de data niet 100% compleet maar heb ik wel het functionele gedeelte gedaan en begrepen.
 
 ## Externe database
