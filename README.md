@@ -28,6 +28,15 @@ Als ik mijn SPARQL query inlaad via mijn endpoint (mijn gebruikte endpoint):
 en deze data in de console.log() zette kreeg ik de volgende resultaten te zien:
 ![Image of raw data](https://i.gyazo.com/7c48f2b9bcbb2aa7a2ad6277d9c3dbe6.png)
 
+## Taken
+Hieronder een lijstje van wat ik stap voor stap gefixt heb.
+- [x] Data opschonen per eeuw
+- [x] Externe database vinden van gebeurtenissen per eeuw
+- [x] Externe database opschonen
+- [x] Alle landen groeperen als super-continent (Afrika, Amerika, Eurazië en Oceanië)
+- [x] Alles wat dezelfde locatie en jaartal heeft samenvoegen (het aantal items wel bij elkaar optellen)
+- [x] Alles per eeuw laten zien
+
 ## Schoonmaken van data
 Daarna heb ik mijn cleanData() functie gerund. Deze functie maakt de jaartallen schoon en gooit onnodige data weg.
 <details><summary>de volgende resultaten te zien:</summary>
@@ -141,15 +150,6 @@ export async function cleanedArr(endpoint, query){
 }
 ```
 </details>
-
-## Taken
-Hieronder een lijstje van wat ik stap voor stap gefixt heb.
-- [x] Data opschonen per eeuw
-- [x] Externe database vinden van gebeurtenissen per eeuw
-- [x] Externe database opschonen
-- [x] Alle landen groeperen als super-continent (Afrika, Amerika, Eurazië en Oceanië)
-- [x] Alles wat dezelfde locatie en jaartal heeft samenvoegen (het aantal items wel bij elkaar optellen)
-- [x] Alles per eeuw laten zien
 
 ## Opschonen met JavaScript
 In mijn vorige [Wiki leg ik stap voor stap uit](https://github.com/RoyCsuka/functional-programming/wiki/Data-cleaning) hoe ik mijn data heb schoongemaakt. I.v.m. tijdsnood heb ik de "v.chr", "n.chr", "bc" en "ad" data waardes en niet schoon kunnen maken. Daarom heb ik ervoor gekozen om deze if statement nog te defineren voordat ik de data terug geef aan mijn main functie.
