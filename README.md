@@ -51,6 +51,7 @@ function cleanData(row){
 }
 ```
 <details><summary>resultaat:</summary>
+	
 ![Cleand data](https://i.gyazo.com/6b44f33eb4f58b33949f5d130ae737b5.png)
 </details>
 
