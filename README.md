@@ -37,6 +37,7 @@ Daarna heb ik mijn cleanData() functie gerund. Deze functie maakt de jaartallen 
 
 ## Data transformeren
 Vervolgens heb ik de data een niveau hoger gebracht met de volgende code:
+
 ```
 //This function gets the nested value out of the object in each property
 // in our data
@@ -62,16 +63,16 @@ En als laatste stap heb ik de data genest met D3 op de volgende manier:
 	
 ```
 function transformData(source){
-  let transformed =  d3.nest()
-		.key(d => d.preference)
-  	.rollup(d => {
-      return {
-        amount: d.length,
-        brothersTotal: d3.sum(d.map(correspondent => correspondent.brothers))
-      }
-    })
-		.entries(source);
-  return transformed
+   let transformed =  d3.nest()
+	.key(d => d.preference)
+	   .rollup(d => {
+		return {
+		   amount: d.length,
+		   brothersTotal: d3.sum(d.map(correspondent => correspondent.brothers))
+		}
+	   })
+	.entries(source);
+   return transformed
 }
 ```
 
