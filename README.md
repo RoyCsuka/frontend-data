@@ -28,7 +28,10 @@ Als ik mijn SPARQL query inlaad via mijn endpoint (mijn gebruikte endpoint):
 en deze data in de console.log() zette kreeg ik de volgende resultaten te zien:
 ![Image of raw data](https://i.gyazo.com/7c48f2b9bcbb2aa7a2ad6277d9c3dbe6.png)
 
-Daarna heb ik mijn cleanData() functie gerund. Deze functie maakt de jaartallen schoon en  om de data te cleanen en kreeg ik <details><summary>de volgende resultaten te zien:</summary>
+## Schoonmaken van data
+Daarna heb ik mijn cleanData() functie gerund. Deze functie maakt de jaartallen schoon en gooit onnodige data weg.
+<details><summary>de volgende resultaten te zien:</summary>
+
 ![Image of cleaned data](https://i.gyazo.com/b1f6450b51d5a8bf8e87d1475501a397.png)
 </details>
 
