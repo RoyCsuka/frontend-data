@@ -79,7 +79,7 @@ function transformData(source){
 </details>
 
 <details><summary>Wat mijn code is geworden:</summary>
-Ten opzichte van laurens zijn code heb ik het anders genest door .key(d => d.continentLabel) te gebruiken.
+Ten opzichte van laurens zijn code heb ik het anders genest door ```.key(d => d.continentLabel)``` te gebruiken.
 	    
 ```
 function calculateAndGroup(source){
