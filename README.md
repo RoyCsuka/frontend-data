@@ -166,13 +166,10 @@ Hierdoor is de data niet 100% compleet maar heb ik wel het functionele gedeelte 
 ## Externe database
 Online heb ik gezocht naar een database met historische gebeurtenissen in de wereld met [dit bestand als begin](https://slidex.tips/download/major-events-in-world-history). Uiteindelijk heb ik de data uit dit PDF'je gehaald en in Excel verwerkt. De data heb ik opgeschoond in Excel en heb ik geexpoteerd als CSV en omgezet naar JSON. Hieronder een regel uit de database:
 ![Externe database](https://github.com/RoyCsuka/assets/blob/master/external-database.png)
+_Hier heb ik uiteindelijk niks mee gedaan_
 
 # D3
-Met D3 heb ik de [code van Laurens](https://beta.vizhub.com/Razpudding/2e039bf6e39a421180741285a8f735a3) gepakt en maar twee zinnen van veranderd waardoor de groepering en counting van de arrays anders is gegaan. Met als eindresultaat:
-![Gif van eindresultaat](https://gyazo.com/fb77f61a4fc58dff346a9786d4f3547d)
-
-## Het proces
-Om het te kunnen fixen in D3 heb ik eerst wat tutorial video's gekeken 
+Bekijk mijn proces van D3 in mijn [wiki](https://github.com/RoyCsuka/frontend-data/wiki/D3-map-maken/) aangezien het een te lang verhaal is voor in mijn readme.
 
 # Bronnenlijst
 - D3 opschoon functie en opzet van de kaart: https://beta.vizhub.com/RoyCsuka/93aa46388dc6456581c22a3ea07af0be?edit=files&file=prepareData.js
